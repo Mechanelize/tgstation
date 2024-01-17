@@ -1,5 +1,5 @@
 /// How often the sensor data is updated
-#define SENSORS_UPDATE_PERIOD 10 SECONDS //How often the sensor data updates.
+#define SENSORS_UPDATE_PERIOD (10 SECONDS) //How often the sensor data updates.
 /// The job sorting ID associated with otherwise unknown jobs
 #define UNKNOWN_JOB_ID 81
 
@@ -8,9 +8,6 @@
 	desc = "Used to monitor active health sensors built into most of the crew's uniforms."
 	icon_screen = "crew"
 	icon_keyboard = "med_key"
-	use_power = IDLE_POWER_USE
-	idle_power_usage = 250
-	active_power_usage = 500
 	circuit = /obj/item/circuitboard/computer/crew
 	light_color = LIGHT_COLOR_BLUE
 
@@ -82,6 +79,7 @@
 	icon_keyboard = "syndie_key"
 
 /obj/machinery/computer/crew/ui_interact(mob/user)
+	. = ..()
 	GLOB.crewmonitor.show(user,src)
 
 GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
@@ -113,6 +111,7 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		JOB_VIROLOGIST = 22,
 		JOB_MEDICAL_DOCTOR = 23,
 		JOB_PARAMEDIC = 24,
+		JOB_CORONER = 25,
 		// 30-39: Science
 		JOB_RESEARCH_DIRECTOR = 30,
 		JOB_SCIENTIST = 31,
@@ -123,11 +122,12 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		JOB_STATION_ENGINEER = 41,
 		JOB_ATMOSPHERIC_TECHNICIAN = 42,
 		// 50-59: Cargo
-		JOB_HEAD_OF_PERSONNEL = 50,
-		JOB_QUARTERMASTER = 51,
-		JOB_SHAFT_MINER = 52,
-		JOB_CARGO_TECHNICIAN = 53,
+		JOB_QUARTERMASTER = 50,
+		JOB_SHAFT_MINER = 51,
+		JOB_CARGO_TECHNICIAN = 52,
+		JOB_BITRUNNER = 53,
 		// 60+: Civilian/other
+		JOB_HEAD_OF_PERSONNEL = 60,
 		JOB_BARTENDER = 61,
 		JOB_COOK = 62,
 		JOB_BOTANIST = 63,
@@ -244,9 +244,9 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 			if (jobs[trim_assignment] != null)
 				entry["ijob"] = jobs[trim_assignment]
 
-		// Binary living/dead status
+		// Current status
 		if (sensor_mode >= SENSOR_LIVING)
-			entry["life_status"] = (tracked_living_mob.stat != DEAD)
+			entry["life_status"] = tracked_living_mob.stat
 
 		// Damage
 		if (sensor_mode >= SENSOR_VITALS)
@@ -273,7 +273,7 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 
 	return results
 
-/datum/crewmonitor/ui_act(action,params)
+/datum/crewmonitor/ui_act(action, params)
 	. = ..()
 	if(.)
 		return
@@ -282,7 +282,7 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 			var/mob/living/silicon/ai/AI = usr
 			if(!istype(AI))
 				return
-			AI.ai_camera_track(params["name"])
+			AI.ai_tracking_tool.set_tracked_mob(AI, params["name"])
 
 #undef SENSORS_UPDATE_PERIOD
 #undef UNKNOWN_JOB_ID

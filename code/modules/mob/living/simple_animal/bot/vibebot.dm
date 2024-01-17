@@ -1,8 +1,9 @@
 /mob/living/simple_animal/bot/vibebot
 	name = "\improper Vibebot"
 	desc = "A little robot. It's just vibing, doing its thing."
-	icon = 'icons/mob/aibots.dmi'
-	icon_state = "vibebot"
+	icon = 'icons/mob/silicon/aibots.dmi'
+	icon_state = "vibebot1"
+	base_icon_state = "vibebot"
 	density = FALSE
 	anchored = FALSE
 	health = 25
@@ -18,15 +19,16 @@
 	bot_type = VIBE_BOT
 	data_hud_type = DATA_HUD_DIAGNOSTIC_BASIC
 	path_image_color = "#2cac12"
+	possessed_message = "You are a vibebot! Maintain the station's vibes to the best of your ability!"
 
 	///The vibe ability given to vibebots, so sentient ones can still change their color.
 	var/datum/action/innate/vibe/vibe_ability
 
 /mob/living/simple_animal/bot/vibebot/Initialize(mapload)
 	. = ..()
-	update_appearance()
 	vibe_ability = new(src)
 	vibe_ability.Grant(src)
+	update_appearance(UPDATE_ICON)
 
 /mob/living/simple_animal/bot/vibebot/Destroy()
 	QDEL_NULL(vibe_ability)
@@ -43,10 +45,11 @@
 	if(!(bot_mode_flags & BOT_MODE_AUTOPATROL))
 		return
 
-	if(mode == BOT_IDLE || mode == BOT_START_PATROL)
-		start_patrol()
-	if(mode == BOT_PATROL)
-		bot_patrol()
+	switch(mode)
+		if(BOT_IDLE, BOT_START_PATROL)
+			start_patrol()
+		if(BOT_PATROL)
+			bot_patrol()
 
 /mob/living/simple_animal/bot/vibebot/turn_off()
 	vibe_ability.remove_colors()
@@ -60,10 +63,10 @@
 /datum/action/innate/vibe
 	name = "Vibe"
 	desc = "LMB: Change vibe color. RMB: Reset vibe color."
-	icon_icon = 'icons/mob/actions/actions_minor_antag.dmi'
+	button_icon = 'icons/mob/actions/actions_minor_antag.dmi'
 	button_icon_state = "funk"
 
-/datum/action/innate/vibe/IsAvailable()
+/datum/action/innate/vibe/IsAvailable(feedback = FALSE)
 	. = ..()
 	if(!.)
 		return FALSE

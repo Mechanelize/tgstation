@@ -35,7 +35,7 @@
 
 	var/L = min(round(lastgenlev / 100000), 11)
 	if(L != 0)
-		. += mutable_appearance('icons/obj/power.dmi', "teg-op[L]")
+		. += mutable_appearance('icons/obj/machines/engine/other.dmi', "teg-op[L]")
 	if(hot_circ && cold_circ)
 		. += "teg-oc[lastcirc]"
 
@@ -96,7 +96,6 @@
 	add_avail(power_output)
 	lastgenlev = power_output
 	lastgen -= power_output
-	..()
 
 /obj/machinery/power/generator/proc/get_menu(include_link = TRUE)
 	var/t = ""
@@ -206,7 +205,7 @@
 /obj/machinery/power/generator/screwdriver_act(mob/user, obj/item/I)
 	if(..())
 		return TRUE
-	panel_open = !panel_open
+	toggle_panel_open()
 	I.play_tool_sound(src)
 	to_chat(user, span_notice("You [panel_open?"open":"close"] the panel on [src]."))
 	return TRUE
@@ -228,3 +227,5 @@
 	if(cold_circ)
 		cold_circ.generator = null
 		cold_circ = null
+
+#undef GENRATE

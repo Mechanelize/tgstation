@@ -3,15 +3,15 @@
 	icon_state = "infernoshot"
 	damage = 20
 	damage_type = BURN
-	flag = ENERGY
+	armor_flag = ENERGY
 	armour_penetration = 10
 	reflectable = NONE
 	wound_bonus = 0
 	bare_wound_bonus = 10
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/red_laser
 
-/obj/projectile/energy/inferno/on_hit(atom/target, blocked, pierce_hit)
-	..()
+/obj/projectile/energy/inferno/on_hit(atom/target, blocked = 0, pierce_hit)
+	. = ..()
 	if(!ishuman(target))
 		return
 
@@ -29,14 +29,14 @@
 	damage = 20
 	damage_type = BRUTE
 	armour_penetration = 10
-	flag = ENERGY
+	armor_flag = ENERGY
 	sharpness = SHARP_POINTY //it's a big ol' shard of ice
 	reflectable = NONE
 	wound_bonus = 0
 	bare_wound_bonus = 10
 
-/obj/projectile/energy/cryo/on_hit(atom/target, blocked, pierce_hit)
-	..()
+/obj/projectile/energy/cryo/on_hit(atom/target, blocked = 0, pierce_hit)
+	. = ..()
 	if(!ishuman(target))
 		return
 
